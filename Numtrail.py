@@ -7,28 +7,29 @@ Created on Sun Nov 22 23:28:50 2020
 
 import numpy as np
 
+### Class queue and its functions ###
 class cola:
     # Constructor
     def __init__(self, cap=100):
         self.data=[]
         self.capacity=cap
 
-    # --Métodos--
+    # --Methods--
     
-    #Enqueue: Inserta un elemento en la cola
+    #Enqueue: Insert an element in the queue
     def enqueue(self, x):
         if len(self.data) <= self.capacity:
             return self.data.append(x)
     
-    # Dequeue: Quita y devuelve un elemento en la cola    
+    # Dequeue: Erases the element in the queue
     def dequeue(self):
         return self.data.pop(0)
     
-    # Peek: Devuelve el elemento al inicio de la cola
+    # Peek: Returns the first element of the queue
     def peek(self):
         return self.data[0]
     
-    # Empty: Devuelve un booleano indicando si es verdad que la pila está vacía
+    # Empty: Returns true if queue is empty
     def empty(self):
         return self.data == []
     
@@ -36,7 +37,7 @@ class cola:
     def print(self):
             print(self.data)
 
-### Clase nodo y sus funciones ###
+### Class node and its functions ###
 class node:
     
     # Constructor
@@ -47,15 +48,16 @@ class node:
         self.left = None
         self.data = n
         
-    # ---Métodos---            
-           
-    # Método alfa-beta para encontrar el camino más óptimo en el árbol de cuatro nodos dado.
+    # ---Méthods---            
+    
+    # Method: Alpha-beta. It finds the best path in the given four-node tree.
     # Variables:
-    # self (el nodo actual)
-    # kind (si es Max o ens Min (True/False))
-    # lvl (el nivel del árbol en cuestión)
-    # alpha (el valor de alfa)
-    # beta (el valor de beta)        
+    # self (current node)
+    # kind (max or min)
+    # lvl (level in the tree)
+    # alpha (alpha value)
+    # beta (beta value)
+               
     def alphabeta(self, kind, lvl, scr, side, alpha = -1000, beta = 1000):
         aux =  'x'
         if kind:
@@ -102,14 +104,15 @@ class node:
             return [lvl, value, aux]
 
 
-    # Método creador de arbol de posibilidades
+    # Method: 
+    # Constructor method for the posibilities tree
     # Variables:
-    # self: El nodo actual
-    # obj: El objeto tablero de la partida
-    # rpos: La posición del jugador rojo (jugador)
-    # bpos: la posición del jugaro azul (CPU)
-    # lvl: El nivel de profundidad del árbol a crear
-    # minimax = Qué estatus de minimax es el nodo raiz
+    # self: Currend node
+    # obj: Table object
+    # rpos: Red player position (player)
+    # bpos: Blue player position (CPU)
+    # lvl: SIze of the tree
+    # minimax: Minimax status for root node.
     def build(self, obj, rpos, bpos, lvl, minimax = False):
         if lvl == 0:
             return
@@ -174,7 +177,7 @@ class node:
         return
         
 
-### Clase tabla y sus funciones ###
+### Table class and its functions ###
 class table:
     
     # --Constructor--
@@ -186,73 +189,73 @@ class table:
         self.points = 0
         self.status = True
     
-    # Llenar la tabla de enteros al azar entre 1 y 2N
+    # Fills the table with uniform random integers between 1 and 2n 
     def newtable(self):
         self.data = np.random.randint(1, ((self.size*2)+1), size = (self.size, self.size))
         return self.data
    
-    # Imprime los datos de la tabla 
+    # Prints the content of the table. 
     def print(self):
         print(self.data)
-        print("\nMarcador", self.points, "puntos\n")
+        print("\nScore", self.points, "points\n")
     
-    # Usuario juega un turno
+    # User plays a turn
     # Variable
-    # player: booleano para saber a qué jugador le toca
+    # player: boolean for defining wich player's turn is.
     def turn(self, player):
         self.print()
         
         if player == True:
-            # Variables con las rposiciones de cada opción rposible
+            # Variables with all positions possible.
             up = [(self.rpos[0])-1, self.rpos[1]]
             right = [self.rpos[0], (self.rpos[1])+1]
             down = [self.rpos[0]+1, self.rpos[1]]
             left = [self.rpos[0], self.rpos[1]-1]
-            # lista de listas con la información necesaria de cada bloque contiguo
+            # list of list with the information of each available block
             choices = []
-            print("\nSu turno\n")
-            print("posibilidad de movimientos")
-            # Ifs para revisar la disponibilidad de cada bloque
+            print("\nYour turn\n")
+            print("moves possible")
+            # Availability of each adjacent block.
             if (up[0] >= 0 and self.data[up[0], up[1]] != 0):
-                print("Arriba", self.data[up[0], up[1]])
+                print("Up", self.data[up[0], up[1]])
                 choices.append(('w', self.data[up[0], up[1]], up, True))
             else:
                 choices.append(('w', 0, up, False))
             if (right[1] < self.size and self.data[right[0], right[1]] != 0):
-                print("Derecha", self.data[right[0], right[1]])
+                print("Right", self.data[right[0], right[1]])
                 choices.append(('d', self.data[right[0], right[1]], right, True))
             else:
                 choices.append(('d', 0, right, False))
             if (down[0] < self.size and self.data[down[0], down[1]] != 0):
-                print("Abajo", self.data[down[0], down[1]])
+                print("Down", self.data[down[0], down[1]])
                 choices.append(('s', self.data[down[0], down[1]], down, True))
             else:
                 choices.append(('s', 0, down, False))
             if (left[1] >= 0 and self.data[left[0], left[1]] != 0):
-                print("Izquierda", self.data[left[0], left[1]])
+                print("Left", self.data[left[0], left[1]])
                 choices.append(('a', self.data[left[0], left[1]], left, True))
             else:
                 choices.append(('a', 0, left, False))
-            # Si no hay más opciones disponibles regresa False
+            # If there is no more options available, it returns False
             if choices[0][3] == False and choices[1][3] == False and choices[2][3] == False and choices[3][3] == False:
                 return False
             else:
-                # Variable con la opción señalada por el usuario
+                # Variable with the player's selected option.
                 choice = 'x'
-                # Despliega las opciones disponibles.
-                print('por favor usa solo una de las teclas de abajo y luego enter.')
+                # Displays available options.
+                print('Choose, then Enter.')
                 for i in range(len(choices)):
                     if (choices[i][1] != 0):
                         print(choices[i][0])
-                print("Elige una opción válida")
+                print("Choose a valid option")
                 opc = False
                 
                 while opc == False:
                     choice = input()
-                    # Busca la opción señalada por el usuario.
+                    # Looks for the option selected by the user.
                     for i in range(len(choices)):
                         if choices[i][0] == choice:
-                            # Si es un movimiento válido mueve de casilla y suma.
+                            # If it's a fair movement, it moves to the new block and adds its number.
                             if choices[i][3] == True:
                                 opc = True
                                 self.rpos = choices[i][2]
@@ -260,19 +263,19 @@ class table:
                                 self.data[self.rpos[0], self.rpos[1]] = 0
                                 break
                             else:
-                                print("Favor de poner una opción válida.")
-                print("Tu movimiento")
+                                print("Please choose an available option.")
+                print("Your move")
                 return True
         else:
-            # Variables con las rposiciones de cada opción posible
-            print("Movimiento CPU")
+            # Variables with all positions possible.
+            print("CPU's move")
             up = [(self.bpos[0])-1, self.bpos[1]]
             right = [self.bpos[0], (self.bpos[1])+1]
             down = [self.bpos[0]+1, self.bpos[1]]
             left = [self.bpos[0], self.bpos[1]-1]
             alt = self
             choices = []
-             # Ifs para revisar la disponibilidad de cada bloque
+            # Availability of each adjacent block.
             if (up[0] >= 0 and self.data[up[0], up[1]] != 0):
                 choices.append(('w', self.data[up[0], up[1]], up, True))
             else:
@@ -289,7 +292,7 @@ class table:
                 choices.append(('a', self.data[left[0], left[1]], left, True))
             else:
                 choices.append(('a', 0, left, False))
-            # Si no hay más opciones disponibles regresa False
+            # If there is no more options available, it returns False
             if choices[0][3] == False and choices[1][3] == False and choices[2][3] == False and choices[3][3] == False:
                 return False
             n = node(alt.data[alt.bpos[0], alt.bpos[1]])
@@ -307,24 +310,24 @@ class table:
             self.data[self.bpos[0], self.bpos[1]] = 0
         return True
             
-# Arranca el juego!
-print("\nBienvenido al juego\n")
-print("Para poder jugar usa las teclas w, a, s, d del teclado.",
-      "\nEstas teclas son un estándar en los videojuegos de compurtadora para:",
-      "\nw: arriba",
-      "\na: izquierda",
-      "\ns: abajo",
-      "\nd: derecha\n")   
+# Let the game begin!
+print("\nWelcome to Numtrail\n")
+print("In order to play use the w, a, s, d keys.",
+      "\nTheese are the videogame standard for:",
+      "\nw: Up",
+      "\na: Left",
+      "\ns: Down",
+      "\nd: Right\n")   
 size = 0
 dif = 0
-# Mientras no diga un tamaño de tablero correcto...
+# Until the user doesn't select a right table size...
 while size < 4 or size > 10: 
-    print("Por favor ingresa el tamaño del tablero\n", "Mínimo 4\n", "Máximo 10 \n")
+    print("Please select a table size\n", "Min 4\n", "Max 10 \n")
     size = input()
     size = int(size)
-# Mientras no diga un nivel de dificultado correcto...
+# Until the user desn't select a right dificulty level...
 while dif < 3 or dif > 15:
-    print("Por favor ingresa una dificultad del 3 al 15")
+    print("Please select a dificulty level between 3 (extra easy) and 15 (extra hard)")
     dif = input()
     dif = int(dif)     
     print("\n")
@@ -343,10 +346,10 @@ print("\n          ***************")
 print("          ***GAME OVER***")
 print("          ***************")
 if t.points > 0:
-    print("             ¡Tu ganas!")
+    print("             You win!")
 elif t.points < 0:
-    print("            Tu pierdes...")
+    print("            You lose...")
 else: 
-    print("             ¡Empate!")
-print("\nPuntuación final:", t.points, "puntos")
-print("Gracias por jugar. Juego creado por Miguel Solis para la clase de IDI1.")
+    print("             Draw!")
+print("\nFinal score:", t.points, "points")
+print("Thanks for playing. Created by Miguel Solis.")
